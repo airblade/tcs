@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+
+# Check arguments.
+if ARGV.empty? || ARGV.length > 2
+  $stderr.puts <<~END
+    Usage:
+
+    tcs CSS_FILE HTML_FILE
+    tcs CSS_FILE < HTML_FILE
+  END
+  exit 1
+end
+
+CLASS_NAME = /[.]([^\s{]+) ?\{/
+
+# Class declaration in HTML, i.e. the stuff inside the quotation marks
+# in `class="..."`.
+CLASS_LIST = /(?<=class=")([^"]+)(?=")/
+
+# modifier -> css
+PSEUDO_CLASSES = {
+  'hover'             => 'hover',
+  'focus'             => 'focus',
+  'focus-within'      => 'focus-within',
+  'focus-visible'     => 'focus-visible',
+  'active'            => 'active',
+  'visited'           => 'visited',
+  'target'            => 'target',
+  'first'             => 'first-child',
+  'last'              => 'last-child',
+  'only'              => 'only-child',
+  'odd'               => 'nth-child(odd)',
+  'even'              => 'nth-child(even)',
+  'first-of-type'     => 'first-of-type',
+  'last-of-type'      => 'last-of-type',
+  'only-of-type'      => 'only-of-type',
+  'empty'             => 'empty',
+  'disabled'          => 'disabled',
+  'enabled'           => 'enabled',
+  'checked'           => 'checked',
+  'indeterminate'     => 'indeterminate',
+  'default'           => 'default',
+  'required'          => 'required',
+  'valid'             => 'valid',
+  'invalid'           => 'invalid',
+  'in-range'          => 'in-range',
+  'out-of-range'      => 'out-of-range',
+  'placeholder-shown' => 'placeholder-shown',
+  'autofill'          => 'autofill',
+  'read-only'         => 'read-only'
+}
+
+# modifier -> css
+PSEUDO_ELEMENTS = {
+  'before'       => 'before',
+  'after'        => 'after',
+  'first-letter' => 'first-letter',
+  'first-line'   => 'first-line',
+  'marker'       => 'marker',
+  'selection'    => 'selection',
+  'file'         => 'file-selector-button',
+  'backdrop'     => 'backdrop',
+  'placeholder'  => 'placeholder'
+}
+
+def to_css(tailwind_class)
+  css_class = tailwind_class
+
+  # pseudo class
+  mod, css = PSEUDO_CLASSES.find { |mod, _| tailwind_class =~ /(^|[^-])#{mod}:/ }
+  css_class += ":#{css}" if mod
+
+  # pseudo element
+  mod, css = PSEUDO_ELEMENTS.find { |mod, _| tailwind_class =~ /(^|[^-])#{mod}:/ }
+  css_class += "::#{css}" if mod
+
+  # aria state
+  mod = tailwind_class[/\baria-\w+/]
+  if mod
+    css = %Q{[#{mod}="true"]}
+    css_class += css
+  end
+
+  # data attribute
+  # modifier:  data-[size=large]
+  # css:       [data-size=large]
+  mod = tailwind_class[/\bdata-\[.*?\]/]
+  if mod
+    css = "[#{mod.delete '['}"
+    css_class += css
+  end
+
+  # LTR / RTL - not released yet (in preview)
+
+  # Arbitrary variants - TODO
+  # https://tailwindcss.com/docs/hover-focus-and-other-states#using-arbitrary-variants
+
+  # open attribute
+  css_class += '[open]' if tailwind_class.include? 'open'
+
+  css_class
+end
+
+
+# Read CSS and HTML.
+html_in_place = ARGV.length == 2
+html_file = html_in_place ? ARGV.pop : '-'
+
+css = ARGF.read
+ARGV.push html_file
+html = ARGF.read
+
+
+# Extract class names from the CSS.
+classes = css
+  .scan(CLASS_NAME)
+  .flatten
+  .map { |name| name.delete '\\' }
+
+
+# Update each class list in the HTML with the sorted version.
+html.gsub!(CLASS_LIST) do |class_list|
+  sorted = class_list
+    .split
+    .sort_by { |name| classes.index to_css(name) }
+
+  class_list.gsub(/\S+/).with_index do |_, i|
+    sorted[i]
+  end
+end
+
+
+# Write out the HTML.
+if html_in_place
+  File.write html_file, html
+else
+  print html
+end
