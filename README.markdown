@@ -35,7 +35,7 @@ Either give the HTML file as the second argument, which will update it in place;
 
 `0`: success
 
-`1`: one or more unsupported modifiers were encountered (see stderr for details)
+`1`: one or more unsupported classes were encountered (see stderr for details).  They are sorted to the front of the class list to make them obvious.
 
 
 ## Examples

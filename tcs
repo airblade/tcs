@@ -127,7 +127,7 @@ html.gsub!(CLASS_LIST) do |class_list|
     .sort_by { |name|
       classes.index(to_css(name)) || begin
         $stderr.puts <<~END
-          Unsupported modifier '#{name}'.  \
+          Unsupported class '#{name}'.  \
           Please open an issue at https://github.com/airblade/tcs/issues/new
         END
         exit_code = 1

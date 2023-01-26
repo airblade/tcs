@@ -29,12 +29,12 @@ class TcsTest < Minitest::Test
     assert_match /Usage/, err
   end
 
-  def test_unsupported_modifier
+  def test_unsupported_class
     out, err = capture_subprocess_io do
       refute system(%Q(echo '<div class="p-6 foo"></div>' | #{@tcs} #{@css}))
     end
     assert_equal %Q(<div class="foo p-6"></div>\n), out
-    assert_match /Unsupported modifier 'foo'/, err
+    assert_match /Unsupported class 'foo'/, err
   end
 
   # Most of the fixtures come from here:
