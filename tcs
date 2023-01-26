@@ -101,6 +101,8 @@ def to_css(tailwind_class)
   css_class
 end
 
+exit_code = 0
+
 
 # Read CSS and HTML.
 html_in_place = ARGV.length == 2
@@ -122,7 +124,16 @@ classes = css
 html.gsub!(CLASS_LIST) do |class_list|
   sorted = class_list
     .split
-    .sort_by { |name| classes.index to_css(name) }
+    .sort_by { |name|
+      classes.index(to_css(name)) || begin
+        $stderr.puts <<~END
+          Unsupported modifier '#{name}'.  \
+          Please open an issue at https://github.com/airblade/tcs/issues/new
+        END
+        exit_code = 1
+        -1  # sort to front to make obvious
+      end
+    }
 
   class_list.gsub(/\S+/).with_index do |_, i|
     sorted[i]
@@ -136,3 +147,5 @@ if html_in_place
 else
   print html
 end
+
+exit exit_code

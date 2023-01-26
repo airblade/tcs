@@ -29,6 +29,14 @@ class TcsTest < Minitest::Test
     assert_match /Usage/, err
   end
 
+  def test_unsupported_modifier
+    out, err = capture_subprocess_io do
+      refute system(%Q(echo '<div class="p-6 foo"></div>' | #{@tcs} #{@css}))
+    end
+    assert_equal %Q(<div class="foo p-6"></div>\n), out
+    assert_match /Unsupported modifier 'foo'/, err
+  end
+
   # Most of the fixtures come from here:
   # https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted
   def test_sorting
