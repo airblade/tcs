@@ -58,6 +58,11 @@ tcs css/tailwind.css index.html
 ```
 
 
+## Text editor integrations
+
+- Vim: [vim-tcs](https://github.com/airblade/vim-tcs)
+
+
 ## Intellectual Property
 
 Copyright Andrew Stewart.  Released under the MIT licence.
