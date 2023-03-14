@@ -1,0 +1,13 @@
+.foo {
+  color: red;
+}
+
+.bar{
+  color: red;
+}
+
+.baz, .quz {
+  color: red;
+}
+
+.cat{color:red;}.dog{color:red;}.rabbit{width:2.5rem;}.hamster{margin:0.5px}

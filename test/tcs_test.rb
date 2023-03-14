@@ -30,6 +30,14 @@ class TcsTest < Minitest::Test
     assert_match /Usage/, err
   end
 
+  def test_extract_classes
+    load_tcs
+
+    css = File.read(File.expand_path('fixtures/styles.css', __dir__))
+    assert_equal %w[ foo bar baz quz cat dog rabbit hamster ],
+      Tcs.send(:extract_class_names, css)
+  end
+
   # Most of the fixtures come from here:
   # https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted
   def test_sorting
@@ -47,6 +55,13 @@ class TcsTest < Minitest::Test
 
 
   private
+
+  # We cannot use `require` or `load` because of the Bash shebang line.
+  def load_tcs
+    source = File.read(File.expand_path('../tcs', __dir__))
+    _shebang, source = source.split(/#!.*$/)
+    eval(source)
+  end
 
   def source_html_files
     fixture_files.reject { |filename| filename.include? 'expected' }
