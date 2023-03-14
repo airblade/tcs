@@ -4,6 +4,7 @@ require 'minitest/autorun'
 class TcsTest < Minitest::Test
 
   SETUP = system <<~END
+    cd #{File.expand_path('..', __dir__)} && \
     npx tailwindcss \
       -c ./test/tailwind.config.js \
       -i ./test/input.css \
