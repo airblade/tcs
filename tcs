@@ -2,9 +2,10 @@
 
 class Tcs
   CLASS_NAME = /
+    [\A^}\s]
     [.]
     (
-      [-_a-zA-Z][^\s,{]+
+      [-_a-zA-Z][^\s,{}]+
     )
     \s?
     [,{]
