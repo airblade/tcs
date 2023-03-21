@@ -34,7 +34,7 @@ class TcsTest < Minitest::Test
     load_tcs
 
     css = File.read(File.expand_path('fixtures/styles.css', __dir__))
-    assert_equal %w[ foo bar baz quz cat dog rabbit hamster ],
+    assert_equal %w[ foo bar baz quz cat dog rabbit hamster sm\\:grid-cols-3 ],
       Tcs.send(:extract_class_names, css)
   end
 

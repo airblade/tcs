@@ -11,3 +11,5 @@
 }
 
 .cat{color:red;}.dog{color:red;}.rabbit{width:2.5rem;}.hamster{margin:0.5px}
+
+@media(min-width: 640px){.sm\:grid-cols-3{grid-template-columns:repeat(3, minmax(0, 1fr));}
