@@ -96,9 +96,15 @@ class Tcs
 
       # Update each class list in the HTML with the sorted version.
       html.gsub(CLASS_LIST) do |class_list|
-        sorted = class_list
+        knowns, unknowns = class_list
           .split
-          .sort_by { |name| classes.index(to_css(name)) || -1 }
+          .partition { |name| classes.index(to_css(name)) }
+
+        sorted = unknowns.concat(
+          knowns.sort_by { |name| classes.index(to_css(name)) }
+        )
+
+        $stderr.puts "unknown: #{unknowns.join(', ')}" if unknowns.any?
 
         class_list.gsub(/\S+/).with_index do |_, i|
           sorted[i]

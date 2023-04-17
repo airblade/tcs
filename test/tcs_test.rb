@@ -30,6 +30,13 @@ class TcsTest < Minitest::Test
     assert_match /Usage/, err
   end
 
+  def test_unknown_classes_output_on_stderr
+    _, err = capture_subprocess_io do
+      system("#{@tcs} #{@css} < #{input_html 'unknown_classes'}")
+    end
+    assert_match /unknown: foo/, err
+  end
+
   def test_extract_classes
     load_tcs
 
