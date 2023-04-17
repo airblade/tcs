@@ -53,6 +53,12 @@ Dry run: see what `tcs` does, without updating your HTML:
 tcs css/tailwind.css < index.html | git diff --no-index index.html -
 ```
 
+Find any classes not known by Tailwind:
+
+```
+tcs css/tailwind.css < index.html > /dev/null
+```
+
 Update your HTML file directly:
 
 ```
