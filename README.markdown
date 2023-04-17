@@ -1,15 +1,22 @@
 # tcs - Tailwind Class Sorter
 
-A standalone script which sorts the classes in your HTML following Tailwind's [recommended class order](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted).  It does not require [Prettier](https://tailwindcss.com/docs/editor-setup#automatic-class-sorting-with-prettier).
+A standalone script which sorts the classes in your markup following Tailwind's [recommended class order](https://tailwindcss.com/blog/automatic-class-sorting-with-prettier#how-classes-are-sorted).  It does not require [Prettier](https://tailwindcss.com/docs/editor-setup#automatic-class-sorting-with-prettier).
 
 You can run it on the command line or integrate it with your text editor.
 
 
 ## Features
 
-- It sorts the classes in your HTML according to Tailwind's recommended order.
-- It leaves the rest of your HTML alone.
+- It sorts the classes in your markup according to Tailwind's recommended order.
+- It leaves the rest of your markup alone.
 - It does not require Prettier.
+- Supports HTML class attributes (`class="..."`) and Ruby/Rails hashes (`class: "..."`).
+
+
+## Constraints
+
+- Your class names have to be enclosed with double- (not single-) quotation marks (`<p class="...">`).
+- [Slim] You have to use `class="foo bar"` rather than the `.foo.bar` class shortcut.
 
 
 ## Installation

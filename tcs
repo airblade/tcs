@@ -11,9 +11,12 @@ class Tcs
     [,{]
   /x
 
-  # Class declaration in HTML, i.e. the stuff inside the quotation marks
-  # in `class="..."`.
-  CLASS_LIST = /(?<=class=")([^"]+)(?=")/
+  # Class declaration in markup, i.e. the stuff inside the quotation marks
+  # in `class="..."` or `class: "..."`.
+  #
+  # Note that the lookbehind alternatives have to be fixed-length so we cannot
+  # match a variable number of spaces after `class:`.
+  CLASS_LIST = /(?<=class="|class:\s")([^"]+)(?=")/
 
   # modifier -> css
   PSEUDO_CLASSES = {
