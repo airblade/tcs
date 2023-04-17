@@ -71,34 +71,34 @@ class Tcs
         $stderr.puts <<~END
           Usage:
 
-          tcs CSS_FILE HTML_FILE
-          tcs CSS_FILE < HTML_FILE
+          tcs CSS_FILE MARKUP
+          tcs CSS_FILE < MARKUP
         END
         exit 1
       end
 
-      # Read CSS and HTML.
-      html_in_place = ARGV.length == 2
-      html_file = html_in_place ? ARGV.pop : '-'
+      # Read CSS and markup.
+      markup_in_place = ARGV.length == 2
+      markup_file = markup_in_place ? ARGV.pop : '-'
 
       css = ARGF.read
-      ARGV.push html_file
-      html = ARGF.read
+      ARGV.push markup_file
+      markup = ARGF.read
 
-      # Write out the sorted HTML.
-      if html_in_place
-        File.write html_file, sort(css, html)
+      # Write out the sorted markup.
+      if markup_in_place
+        File.write markup_file, sort(css, markup)
       else
-        print sort(css, html)
+        print sort(css, markup)
       end
     end
 
-    def sort(css, html)
+    def sort(css, markup)
       # Extract and unescape class names from the CSS.
       classes = extract_class_names(css).map { |name| unescape(name) }
 
-      # Update each class list in the HTML with the sorted version.
-      html.gsub(CLASS_LIST) do |class_list|
+      # Update each class list in the markup with the sorted version.
+      markup.gsub(CLASS_LIST) do |class_list|
         knowns, unknowns = class_list
           .split
           .partition { |name| classes.index(to_css(name)) }
