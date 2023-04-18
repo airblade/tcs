@@ -103,9 +103,8 @@ class Tcs
           .split
           .partition { |name| classes.index(to_css(name)) }
 
-        sorted = unknowns.concat(
+        sorted = unknowns +
           knowns.sort_by { |name| classes.index(to_css(name)) }
-        )
 
         $stderr.puts "unknown: #{unknowns.join(', ')}" if unknowns.any?
 
