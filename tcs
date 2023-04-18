@@ -8,7 +8,7 @@ class Tcs
       [-_a-zA-Z][^\s,{}]+
     )
     \s?
-    [,{]
+    [,{>]
   /x
 
   # Class declaration in markup, i.e. the stuff inside the quotation marks
