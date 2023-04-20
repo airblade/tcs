@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby --disable-gems
 
+require 'set'
+
 class Tcs
   CLASS_NAME = /
     [\A^{},\s]
@@ -85,17 +87,23 @@ class Tcs
       ARGV.push markup_file
       markup = ARGF.read
 
+      @all_unknowns = Set.new
+
       # Write out the sorted markup.
       if markup_in_place
         File.write markup_file, sort(css, markup)
       else
         print sort(css, markup)
       end
+
+      $stderr.puts "unknown: #{@all_unknowns.join(', ')}" unless @all_unknowns.empty?
     end
 
     def sort(css, markup)
       # Extract and unescape class names from the CSS.
       classes = extract_class_names(css).map { |name| unescape(name) }
+
+      all_unknowns = Set.new
 
       # Update each class list in the markup with the sorted version.
       markup.gsub(CLASS_LIST) do |class_list|
@@ -106,7 +114,7 @@ class Tcs
         sorted = unknowns +
           knowns.sort_by { |name| classes.index(to_css(name)) }
 
-        $stderr.puts "unknown: #{unknowns.join(', ')}" if unknowns.any?
+        @all_unknowns.merge(unknowns)
 
         class_list.gsub(/\S+/).with_index do |_, i|
           sorted[i]
